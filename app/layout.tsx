@@ -1,8 +1,12 @@
 import { ReactNode } from "react";
-import Navbar from "@/components/shared/Navbar";
+import Navbar from "@/components/shared/NavbarSignIn";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./Providers";
+import { Providers } from "@/context/Providers";
+import { Toaster } from "sonner";
+import { auth } from "@/auth.config";
+import NavbarSignOut from "@/components/shared/NavbarSignOut";
+import NavbarSignIn from "@/components/shared/NavbarSignIn";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,15 +19,18 @@ interface RootLayoutProps {
   children: ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const session = await auth();
+
   return (
-    <html lang="en">
-      <body className={inter.className} >
-        <Providers>
-          <Navbar />
+    <Providers>
+      <html lang="en">
+        <body className={inter.className}>
+          {session ? <NavbarSignOut /> : <NavbarSignIn />}
           {children}
-        </Providers>
-      </body>
-    </html>
+          <Toaster richColors />
+        </body>
+      </html>
+    </Providers>
   );
 }

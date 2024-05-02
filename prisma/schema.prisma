@@ -14,24 +14,31 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  username      String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  role          String
+  password      String
+  image         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  courses       Course[]
 }
 
 model Course {
-  id             Int          @id @default(autoincrement())
-  userId         Int
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
   title          String
-  description    String?
-  imageUrl       String?
-  price          Float?
-  isPublished    Boolean      @default(false)
-  categoryId     Int
-  courseCategory Category?    @relation(fields: [categoryId], references: [id])
+  description    String
+  imageUrl       String
+  price          Float
+  oldPrice       Float?
+  vote           Float
+  bestSeller     Boolean?
+  categoryId     String
+  courseCategory Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   attachments    Attachment[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -40,19 +47,20 @@ model Course {
 }
 
 model Category {
-  id      Int      @id @default(autoincrement())
-  name    String   @unique
-  courses Course[]
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  courses     Course[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Attachment {
-  id   Int    @id @default(autoincrement())
-  name String
-  url  String
-
-  courseId Int
-  course   Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

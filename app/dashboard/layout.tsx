@@ -1,0 +1,33 @@
+import { auth } from '@/auth.config';
+import Navbar from '@/components/shared/NavbarSignIn';
+import Sidebar from '@/components/shared/Sidebar';
+import { redirect } from 'next/navigation';
+
+
+export default async function DashboardLayout({
+ children
+}: {
+ children: React.ReactNode;
+}) {
+
+  const session = await auth();
+
+  if (!session) {
+    redirect("/")
+  }
+
+  return (
+    <div className="h-full">
+      {/* <div className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-50">
+        <Navbar />
+      </div> */}
+      {/* <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50"> */}
+      <div className="hidden md:flex h-full w-56 flex-col">
+        <Sidebar />
+      </div>
+      <main className="md:pl-56 h-full">
+        {children}
+      </main>
+    </div>
+  );
+}

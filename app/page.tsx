@@ -1,23 +1,24 @@
-import Courses from "@/components/Courses";
-import Main from "@/components/Main";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
-import { User } from "./user";
+import { auth } from "@/auth.config";
+import { redirect } from "next/navigation";
+import Main from "../components/home/Main";
+import Courses from "../components/home/Courses";
+import { Suspense } from "react";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
+
+  if (session) {
+    redirect("/dashboard");
+  }
 
   return (
-    <section className="h-[calc(100vh-7rem)] ">
-      {/* <div>
-        <h1 className="text-primary font-bold text-5xl">Home Page</h1>
-      </div> */}
-      <h2>Server Session</h2>
-      <pre>{JSON.stringify(session)}</pre>
-      <h2>Client Call</h2>
-      <User />
-      <Main />
-      <Courses />
+    <section className="h-[calc(100vh-7rem)] select-none">
+      <Suspense fallback={<p>Loading feed...</p>}>
+        <Main />
+      </Suspense>
+      <Suspense fallback={<p>Loading feed...</p>}>
+        <Courses />
+      </Suspense>
     </section>
   );
 }

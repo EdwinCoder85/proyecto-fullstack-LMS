@@ -9,7 +9,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#099DF1"
+        secondary: "#099DF1",
+        primary: {
+          50: '#D0EEFF',
+          100: '#B7E5FF',
+          200: '#99D6F9',
+          300: '#80D1FF',
+          400: '#5EC5FF',
+          500: '#5AC0FA',
+          600: '#099DF1',
+          700: '#0495E9',
+          800: '#0487D3',
+          900: '#0076BA',
+        },
       }
     },
   },

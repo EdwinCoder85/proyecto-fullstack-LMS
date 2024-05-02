@@ -19,24 +19,35 @@ export async function POST(request: Request) {
       },
     });
     
-    if (user && (await bcrypt.compare(body.password, user.password))) {
-      const { password, ...userWithoutPass } = user;
-      const token = signJwtAccessToken(userWithoutPass);
-      const result = {
-        ...userWithoutPass,
-        token,
-      };
-      return NextResponse.json( {
-        id: result.id,
-        name: result.username,
-        email: result.email,
-        accessToken: result.token
-      } );
-    } 
+    if (user) {
+      const passwordMatches = await bcrypt.compare(body.password, user.password || '');
+      if (passwordMatches) {
+        const { password, ...userWithoutPass } = user;
+        const token = signJwtAccessToken(userWithoutPass);
+        const result = {
+          ...userWithoutPass,
+          token,
+        };
+        return NextResponse.json( {
+          id: result.id,
+          name: result.username,
+          email: result.email,
+          accessToken: result.token
+        } );
+      }
+    }
+    
+    // Handle incorrect password or user not found
+    return NextResponse.json(
+      { message: "Invalid email or password" },
+      { status: 401 }
+    );
+
   } catch (error) {
+    console.error("Error:", error);
     return NextResponse.json(
       { message: "Something went wrong!" },
-      { status: 505 }
+      { status: 500 }
     );
   }
 

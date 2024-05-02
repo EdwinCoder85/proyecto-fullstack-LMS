@@ -1,28 +1,35 @@
-import { FC, forwardRef, InputHTMLAttributes } from "react";
-import { cn } from "@/libs/utils";
+import { twMerge } from "tailwind-merge";
+import { ButtonHTMLAttributes } from "react";
+import Link from "next/link";
 
-interface ButtonProps extends InputHTMLAttributes<HTMLButtonElement> {
-  type: "button" | "submit";
-  label?: string;
-  className?: string;
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
+  href?: string;
 }
 
-const Button: FC<ButtonProps> = forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button({ type, label, className, ...rest }, ref) {
+export function Button({ children, className, href, ...props }: Props) {
+  if (href) {
     return (
-      <button
-        ref={ref}
-        type={type}
-        className={cn(
-          "w-full bg-primary text-white py-3 px-4 rounded-xl border-2 border-transparent hover:bg-transparent hover:border-primary hover:text-primary transition-colors duration-300",
+      <Link
+        href={href}
+        className={twMerge(
+          "block bg-primary-600 py-2 px-3 rounded-xl text-center text-base font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-colors duration-300",
           className
         )}
-        {...rest} 
       >
-        {label}
-      </button>
+        {children}
+      </Link>
     );
   }
-);
 
-export default Button;
+  return (
+    <button
+      className={twMerge(
+        "block rounded-md bg-primary-600 py-2 px-3 text-center text-base font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}

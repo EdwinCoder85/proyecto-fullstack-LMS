@@ -1,4 +1,4 @@
-import { db } from "@/libs/db";
+import prisma from "@/libs/db";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const { name, url, courseId } = body;
 
     // check if attachment already exists
-    const existingAttachment = await db.attachment.findFirst({
+    const existingAttachment = await prisma.attachment.findFirst({
       where: { name: name },
     });
 
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const newAttachment = await db.attachment.create({
+    const newAttachment = await prisma.attachment.create({
       data: {
         name,
         url,
